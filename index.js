@@ -1,0 +1,1 @@
+"use strict";function Client(){}function HUKD(t){if("string"!=typeof t)throw new TypeError("Api key must be string type");return{get:function(t){}}}module.exports=HUKD;

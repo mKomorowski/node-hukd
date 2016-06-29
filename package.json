@@ -1,0 +1,30 @@
+{
+  "name": "hukd",
+  "version": "1.0.0",
+  "description": "Hot Uk Deals  API NodeJS client",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test",
+    "lint": "gulp",
+    "build": "gulp build"
+  },
+  "author": {
+    "name": "Michal Komorowski",
+    "email": "mkomorowski@windowslive.com"
+  },
+  "keywords": [
+    "Hot Uk Deal",
+    "api"
+  ],
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-beautify": "^2.0.0",
+    "gulp-mocha": "^2.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-standard": "^7.0.1",
+    "gulp-uglify": "^1.5.4",
+    "gulp-util": "^3.0.7",
+    "mocha": "^2.5.3"
+  }
+}
