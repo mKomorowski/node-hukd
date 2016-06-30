@@ -1,6 +1,10 @@
 'use strict'
-function Client () {
-
+var Validator = require('jsonschema').Validator
+var validator = new Validator()
+var optionsSchema = require('./../validation/options')
+var DEFAULT_OPTIONS = {
+  output: 'json',
+  page: 1
 }
 
 function HUKD (API_KEY) {
@@ -9,7 +13,15 @@ function HUKD (API_KEY) {
   }
   return {
     get: function (options) {
+      if (typeof options === 'object') {
+        var validationResults = validator.validate(options, optionsSchema)
 
+        if (validationResults.valid === false) {
+          throw new TypeError(validationResults.errors[0].stack)
+        }
+      } else {
+        options = DEFAULT_OPTIONS
+      }
     }
   }
 }
