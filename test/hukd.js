@@ -80,7 +80,7 @@ describe('hukd', function () {
 
       it('should throw TypeError when invalid exclude_expired value', function () {
         expect(function () {
-          hhuk.get({exclude_expired: undefined});
+          hhuk.get({exclude_expired: null});
         }).to.throw(TypeError);
       });
     })

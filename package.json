@@ -4,8 +4,7 @@
   "description": "Hot Uk Deals  API NodeJS client",
   "main": "index.js",
   "scripts": {
-    "test": "gulp test",
-    "lint": "gulp"
+    "test": "./node_modules/mocha/bin/mocha --recursive test"
   },
   "author": {
     "name": "Michal Komorowski",
@@ -17,10 +16,6 @@
   ],
   "devDependencies": {
     "chai": "^3.5.0",
-    "gulp": "^3.9.1",
-    "gulp-mocha": "^2.2.0",
-    "gulp-standard": "^7.0.1",
-    "gulp-util": "^3.0.7",
     "mocha": "^2.5.3"
   },
   "dependencies": {
