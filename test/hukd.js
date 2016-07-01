@@ -1,13 +1,19 @@
 'use strict';
 var expect = require('chai').expect;
+var sinon = require('sinon');
 var HUKD = require('./../index').HUKD;
+var fakeClient = require('./fakes/client');
 
 describe('hukd', function () {
+  var api_key = 'api_key';
   var hhuk;
+  var client;
+  var options;
+  var spy;
 
   context('when new instance created', function () {
     it('should throw object when called with valid api key', function () {
-      hhuk = new HUKD('api_key');
+      hhuk = new HUKD(api_key);
       expect(hhuk).to.be.an('object');
     });
 
@@ -25,11 +31,39 @@ describe('hukd', function () {
   });
 
   context('when get method called', function () {
-    beforeEach(function () {
-      hhuk = new HUKD('api_key');
+    context('with valid options values', function() {
+      beforeEach(function () {
+        spy = {
+          Client: fakeClient
+        };
+        client = sinon.spy(spy, 'Client');
+        HUKD.setClient(client);
+        hhuk = new HUKD(api_key);
+        options = {
+          output: 'json',
+          page: 5
+        };
+
+      });
+
+      it('should call client once', function () {
+        hhuk.get(options);
+
+        expect(client.calledOnce).to.be.true;
+      });
+
+      it('should call client with correct api key', function () {
+        hhuk.get(options);
+
+        expect(client.calledOnce).to.be.true;
+      });
     });
 
     context('with invalid options values', function () {
+      beforeEach(function () {
+        hhuk = new HUKD(api_key);
+      });
+
       it('should throw TypeError when invalid output value', function () {
         expect(function () {
           hhuk.get({output: 'yaml'});
