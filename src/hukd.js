@@ -23,7 +23,7 @@ function HUKD(API_KEY) {
       } else {
         options = DEFAULT_OPTIONS
       }
-      console.log('hehrhe');
+
       return new Client(API_KEY, options);
     }
   }

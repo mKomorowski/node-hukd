@@ -1,0 +1,20 @@
+{
+  "rules": {
+    "indent": [
+      0,
+      2,
+      {"SwitchCase": 1}
+    ],
+    "quotes": [
+      1,
+      "single"
+    ],
+    "no-unused-vars": [
+      1
+    ]
+  },
+  "env": {
+    "node": true
+  },
+  "extends": "eslint:recommended"
+}

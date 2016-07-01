@@ -4,7 +4,8 @@
   "description": "Hot Uk Deals  API NodeJS client",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --recursive test"
+    "test": "./node_modules/mocha/bin/mocha --recursive test",
+    "lint": "./node_modules/eslint/bin/eslint.js ."
   },
   "author": {
     "name": "Michal Komorowski",
