@@ -1,23 +1,23 @@
 'use strict';
 var expect = require('chai').expect;
 var sinon = require('sinon');
+var request = require('request');
 var HUKD = require('./../index').HUKD;
 var DEFAULT_OPTIONS = require('./../src/constants/options');
-var fakeClient = require('./fakes/client');
 
 describe('hukd', function () {
   var api_key = 'api_key';
   var hukd;
-  var client;
   var options;
-  var spy;
+  var url;
+  var callback;
+
+  beforeEach(function () {
+    url = 'http://api.hotukdeals.com/rest_api/v2/?key=' + api_key;
+    callback = function () {};
+  });
 
   context('when new instance created', function () {
-    it('should throw object when called with valid api key', function () {
-      hukd = new HUKD(api_key);
-      expect(hukd).to.be.an('object');
-    });
-
     it('should throw TypeError when called without api key', function () {
       expect(function () {
         new HUKD;
@@ -29,115 +29,137 @@ describe('hukd', function () {
         new HUKD(123);
       }).to.throw(TypeError);
     });
-  });
 
-  context('when get method called', function () {
-    context('without options', function () {
-      beforeEach(function () {
-        spy = {
-          Client: fakeClient
-        };
-        client = sinon.spy(spy, 'Client');
-        HUKD.setClient(client);
-        hukd = new HUKD(api_key);
-      });
-
-      it('should called client with default options', function () {
-        hukd.get();
-
-        expect(client.calledWithExactly(api_key, DEFAULT_OPTIONS)).to.be.true;
-      });
+    it('shuld return an object when called with valid api key', function () {
+      expect(new HUKD(api_key)).to.be.an('object');
     });
 
-    context('with valid options values', function () {
-      beforeEach(function () {
-        spy = {
-          Client: fakeClient
-        };
-        client = sinon.spy(spy, 'Client');
-        HUKD.setClient(client);
-        hukd = new HUKD(api_key);
-        options = {
-          output: 'json',
-          page: 5
-        };
+    context('when get method called', function () {
+      context('without options', function () {
+        it('should throw Error when callback is not passed', function () {
+            expect(function () {
+              hukd = new HUKD(api_key);
+              hukd.get();
+            }).to.throw(TypeError);
+        });
+
+        it('should call request with correct url build from default options', function () {
+          sinon.spy(request, 'get');
+
+          hukd = new HUKD(api_key);
+          hukd.get(callback);
+
+          url += '&output=json&page=1';
+          expect(request.get.withArgs(url).calledOnce).to.be.true;
+
+          request.get.restore();
+        });
       });
 
-      it('should call client once', function () {
-        hukd.get(options);
+      context('with custom options', function () {
+        beforeEach(function () {
+          options = {
+            output: 'xml',
+            category: 'computers',
+            order: 'hot'
+          }
+        });
 
-        expect(client.calledOnce).to.be.true;
+        it('should throw Error when callback is not passed', function () {
+          expect(function () {
+            hukd = new HUKD(api_key);
+            hukd.get(options);
+          }).to.throw(TypeError);
+        });
+
+        it('should call request with correct url build from custom options', function () {
+          sinon.spy(request, 'get');
+
+          hukd = new HUKD(api_key);
+          hukd.get({
+            output: 'xml',
+            category: 'computers',
+            order: 'hot'
+          }, callback);
+
+          url += '&output=xml&category=computers&order=hot&page=1';
+          expect(request.get.withArgs(url).calledOnce).to.be.true;
+
+          request.get.restore();
+        });
       });
+      //
+      // context('and request return an error', function () {
+      //
+      // });
+      //
+      // context('and request return status code different than 200', function () {
+      //
+      // });
+      //
+      // context('and request return successful response', function () {
+      //
+      // });
 
-      it('should call client with correct api key and options', function () {
-        hukd.get(options);
+      context('with invalid options values', function () {
+        beforeEach(function () {
+          hukd = new HUKD(api_key);
+        });
 
-        expect(client.calledWithExactly(api_key, options)).to.be.true;
-      });
+        it('should throw TypeError when invalid output value', function () {
+          expect(function () {
+            hukd.get({output: 'yaml'}, callback);
+          }).to.throw(TypeError);
+        });
 
-      it('should return instance of client', function () {
-        expect(hukd.get(options)).to.be.an.instanceof(client);
+        it('should throw TypeError when invalid category value', function () {
+          expect(function () {
+            hukd.get({category: 'invalid'}, callback);
+          }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError when invalid forum value', function () {
+          expect(function () {
+            hukd.get({forum: 'invalid'}, callback);
+          }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError when invalid online_offline value', function () {
+          expect(function () {
+            hukd.get({online_offline: 'invalid'}, callback);
+          }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError when invalid order value', function () {
+          expect(function () {
+            hukd.get({order: 'invalid'}, callback);
+          }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError when page option is less than 1', function () {
+          expect(function () {
+            hukd.get({page: 0}, callback);
+          }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError when results_per_page option is less than 1', function () {
+          expect(function () {
+            hukd.get({results_per_page: 0}, callback);
+          }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError when results_per_page option is more than 30', function () {
+          expect(function () {
+            hukd.get({results_per_page: 31}, callback);
+          }).to.throw(TypeError);
+        });
+
+        it('should throw TypeError when invalid exclude_expired value', function () {
+          expect(function () {
+            hukd.get({exclude_expired: null}, callback);
+          }).to.throw(TypeError);
+        });
       });
     });
-
-    context('with invalid options values', function () {
-      beforeEach(function () {
-        hukd = new HUKD(api_key);
-      });
-
-      it('should throw TypeError when invalid output value', function () {
-        expect(function () {
-          hukd.get({output: 'yaml'});
-        }).to.throw(TypeError);
-      });
-
-      it('should throw TypeError when invalid category value', function () {
-        expect(function () {
-          hukd.get({category: 'invalid'});
-        }).to.throw(TypeError);
-      });
-
-      it('should throw TypeError when invalid forum value', function () {
-        expect(function () {
-          hukd.get({forum: 'invalid'});
-        }).to.throw(TypeError);
-      });
-
-      it('should throw TypeError when invalid online_offline value', function () {
-        expect(function () {
-          hukd.get({online_offline: 'invalid'});
-        }).to.throw(TypeError);
-      });
-
-      it('should throw TypeError when invalid order value', function () {
-        expect(function () {
-          hukd.get({order: 'invalid'});
-        }).to.throw(TypeError);
-      });
-
-      it('should throw TypeError when page option is less than 1', function () {
-        expect(function () {
-          hukd.get({page: 0});
-        }).to.throw(TypeError);
-      });
-
-      it('should throw TypeError when results_per_page option is less than 1', function () {
-        expect(function () {
-          hukd.get({results_per_page: 0});
-        }).to.throw(TypeError);
-      });
-
-      it('should throw TypeError when results_per_page option is more than 30', function () {
-        expect(function () {
-          hukd.get({results_per_page: 31});
-        }).to.throw(TypeError);
-      });
-
-      it('should throw TypeError when invalid exclude_expired value', function () {
-        expect(function () {
-          hukd.get({exclude_expired: null});
-        }).to.throw(TypeError);
-      });
-    })
   });
 });

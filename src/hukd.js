@@ -1,9 +1,26 @@
 'use strict';
 var Validator = require('jsonschema').Validator;
 var validator = new Validator();
+var request = require('request');
 var optionsSchema = require('./../validation/options');
-var Client = require('./client');
+
+var API = require('./constants/api');
 var DEFAULT_OPTIONS = require('./constants/options');
+
+/**
+ * @param {String} url
+ * @param {Object} params
+ * @returns {String}
+ */
+function _buildUrl (url, params) {
+  for (var key in params) {
+    var param = '&' + String(key) + '=' + String(params[key]);
+
+    url += param;
+  }
+
+  return url;
+}
 
 /**
  * @param {String} API_KEY
@@ -13,11 +30,15 @@ function HUKD(API_KEY) {
   if (typeof API_KEY !== 'string') {
     throw new TypeError('Api key must be string type')
   }
+
   return {
-    /**
-     * @param {Object|undefined} options
-     */
-    get: function (options) {
+    get: function(options) {
+      if(!arguments.length || typeof arguments[arguments.length - 1] !== 'function') {
+        throw new TypeError('callback is not specified');
+      }
+
+      var callback = arguments[arguments.length - 1];
+
       if (typeof options === 'object') {
         var validationResults = validator.validate(options, optionsSchema);
 
@@ -25,15 +46,32 @@ function HUKD(API_KEY) {
           throw new TypeError(validationResults.errors[0].stack)
         }
       } else {
-        options = DEFAULT_OPTIONS
+        options = DEFAULT_OPTIONS;
       }
 
-      return new Client(API_KEY, options);
+      if(typeof options.page === 'undefined') {
+        options.page = API.start_page;
+      }
+
+      var path = API.url + '?key=' + API_KEY;
+      var url = _buildUrl(path, options);
+      var requestOptions = {};
+
+      if(options.outpout == 'json') {
+        requestOptions = {
+          headers: {
+            'Content-Type': 'application/xml'
+          }
+        }
+      } else {
+        requestOptions.json = true;
+      }
+
+      request.get(url, requestOptions, function (err, response, body) {
+
+      });
     }
   }
 }
 
 module.exports = HUKD;
-module.exports.setClient = function(client) {
-  Client = client;
-};
