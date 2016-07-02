@@ -3,7 +3,6 @@ var expect = require('chai').expect;
 var sinon = require('sinon');
 var request = require('request');
 var HUKD = require('./../index').HUKD;
-var DEFAULT_OPTIONS = require('./../src/constants/options');
 
 describe('hukd', function () {
   var api_key = 'api_key';
@@ -88,18 +87,59 @@ describe('hukd', function () {
           request.get.restore();
         });
       });
-      //
-      // context('and request return an error', function () {
-      //
-      // });
-      //
-      // context('and request return status code different than 200', function () {
-      //
-      // });
-      //
-      // context('and request return successful response', function () {
-      //
-      // });
+
+      context('and request return an error', function () {
+        it('callback should return an error', function () {
+          var error = new Error('Request error');
+
+          sinon
+            .stub(request, 'get')
+            .yields(error);
+
+          hukd = new HUKD(api_key);
+          hukd.get(function (err) {
+            expect(err).to.be.instanceOf(Error);
+          });
+
+          request.get.restore();
+        });
+      });
+
+      context('and request return status code different than 200', function () {
+        it('callback should return an error', function () {
+          var statusCode = 500;
+
+          sinon
+            .stub(request, 'get')
+            .yields(null, {statusCode: statusCode});
+
+          hukd = new HUKD(api_key);
+          hukd.get(function (err) {
+            expect(err).to.be.instanceOf(Error);
+            expect(err.code).to.be.equal(statusCode);
+          });
+
+          request.get.restore();
+        });
+      });
+
+      context('and request return successful response', function () {
+        it('callback should return response body', function () {
+          var expectedBody = {};
+
+          sinon
+            .stub(request, 'get')
+            .yields(null, {statusCode: 200}, expectedBody);
+
+          hukd = new HUKD(api_key);
+          hukd.get(function (err, body) {
+            expect(err).to.be.null;
+            expect(body).to.be.equal(expectedBody);
+          });
+
+          request.get.restore();
+        });
+      });
 
       context('with invalid options values', function () {
         beforeEach(function () {

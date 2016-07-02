@@ -14,9 +14,7 @@ var DEFAULT_OPTIONS = require('./constants/options');
  */
 function _buildUrl (url, params) {
   for (var key in params) {
-    var param = '&' + String(key) + '=' + String(params[key]);
-
-    url += param;
+    url += '&' + String(key) + '=' + String(params[key]);
   }
 
   return url;
@@ -26,7 +24,7 @@ function _buildUrl (url, params) {
  * @param {String} API_KEY
  * @constructor
  */
-function HUKD(API_KEY) {
+function HUKD (API_KEY) {
   if (typeof API_KEY !== 'string') {
     throw new TypeError('Api key must be string type')
   }
@@ -68,7 +66,18 @@ function HUKD(API_KEY) {
       }
 
       request.get(url, requestOptions, function (err, response, body) {
+        if(err) {
+          return callback(err);
+        }
 
+        if(response.statusCode !== 200) {
+          var error = new Error('HUKD API responded with code ' + response.statusCode);
+          error.code = response.statusCode;
+
+          return callback(error);
+        }
+
+        return callback(null, body);
       });
     }
   }
