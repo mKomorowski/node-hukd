@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Hot Uk Deals  API NodeJS client",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mKomorowski/node-hukd.git"
+  },
+  "license": "MIT",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha --recursive test/",
     "lint": "node ./node_modules/eslint/bin/eslint.js ."
@@ -24,5 +29,8 @@
   "dependencies": {
     "jsonschema": "^1.1.0",
     "request": "^2.72.0"
+  },
+  "engines": {
+    "node": ">=0.10.0"
   }
 }
