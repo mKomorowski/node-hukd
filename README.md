@@ -12,7 +12,9 @@ npm install hukd
 
 ## Usage
 ```javascript
-const hukd = require('api_key');
+const HUKD = require('hukd');
+
+const hukd = new HUKD('api_key');
 ```
 ## hukd.get([options], callback)
 ```javascript
