@@ -1,7 +1,7 @@
 {
   "name": "hukd",
   "version": "1.0.0",
-  "description": "Hot Uk Deals  API NodeJS client",
+  "description": "Hot UK Deals  API NodeJS client",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -17,7 +17,9 @@
     "email": "mkomorowski@windowslive.com"
   },
   "keywords": [
-    "Hot Uk Deal",
+    "HUKD",
+    "HotUKDeal",
+    "Hot UK Deal",
     "api"
   ],
   "devDependencies": {

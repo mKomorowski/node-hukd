@@ -1,3 +1,1 @@
-module.exports = {
-  HUKD: require('./src/hukd')
-};
+module.exports = require('./src/hukd');

@@ -2,7 +2,7 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var request = require('request');
-var HUKD = require('./../index').HUKD;
+var HUKD = require('./../index');
 
 describe('hukd', function () {
   var api_key = 'api_key';
