@@ -1,6 +1,6 @@
 {
   "name": "hukd",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Hot UK Deals  API NodeJS client",
   "main": "index.js",
   "repository": {
